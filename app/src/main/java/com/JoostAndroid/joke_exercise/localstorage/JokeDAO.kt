@@ -5,7 +5,7 @@ import com.JoostAndroid.joke_exercise.models.Joke
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface jokeDAO {
+interface JokeDAO {
 
     @Query("SELECT * FROM joke")
     fun getJokes() : Flow<List<Joke>>

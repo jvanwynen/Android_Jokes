@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="5dp"
-    >
+    android:padding="10dp"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/joke_main"
@@ -24,6 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:src="@android:drawable/btn_star_big_off" />
+        android:src="@android:drawable/btn_star_big_on" />
 
 </RelativeLayout>
