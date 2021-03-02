@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">Joke_exercise</string>
+    <string name="app_name">Joke Exercise</string>
+    <string name="search">Search</string>
+    <string name="Sort">Sort</string>
+    <string name="sort_alphabetically">Sort Alphabetically</string>
+    <string name="sort_date">Sort by Date</string>
+    <string name="hide_favorites">Hide not favorites</string>
+    <string name="delete_all_not_favorite">Delete all not favorite jokes</string>
+    <string name="delete_all">Delete All</string>
 </resources>

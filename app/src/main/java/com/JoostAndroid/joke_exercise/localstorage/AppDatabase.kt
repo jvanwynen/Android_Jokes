@@ -26,9 +26,9 @@ abstract class AppDatabase : RoomDatabase() {
             val dao = database.get().jokeDao()
 
             applicationScope.launch {
-                dao.insert(Joke( jokeText = "I was reading a great book about an immortal dog the other day. It was impossible to put down.", favorite = true))
+                dao.insert(Joke( jokeText = "I was reading a great book about an immortal dog the other day. It was impossible to put down."))
                 dao.insert(Joke( jokeText = "A guy walks into a bar and asks for 1.4 root beers.\nThe bartender says \"I'll have to charge you extra, that's a root beer float\".\nThe guy says \"In that case, better make it a double.\""))
-                dao.insert(Joke( jokeText = "My parents raised me as an only child, which really annoyed my younger brother."))
+                dao.insert(Joke( jokeText = "My parents raised me as an only child, which really annoyed my younger brother.", favorite = true))
                 dao.insert(Joke( jokeText = "There are only 10 kinds of people in this world: those who know binary and those who don't."))
 
             }
