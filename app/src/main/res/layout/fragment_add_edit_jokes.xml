@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-    
+    tools:context=".ui.addEdit.AddEditJokeFragment">
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -12,21 +13,34 @@
         android:padding="5dp">
 
         <EditText
-            android:id="@+id/joke_text"
+            android:id="@+id/joke_text_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Fill in The Joke"
-            android:inputType="text"
-            />
+            android:inputType="text" />
+
+        <CheckBox
+            android:id="@+id/isFavorite_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Is favorite" />
 
         <TextView
-            android:id="@+id/date_created"
+            android:id="@+id/date_created_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Date created:"
-            />
-
-
+            tools:text="Date created:" />
+        
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/action_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="15dp"
+        android:src="@android:drawable/ic_menu_save" />
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

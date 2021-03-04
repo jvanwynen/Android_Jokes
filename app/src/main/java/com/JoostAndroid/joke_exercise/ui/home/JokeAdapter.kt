@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.JoostAndroid.joke_exercise.databinding.ItemJokeBinding
 import com.JoostAndroid.joke_exercise.models.Joke
 
-class JokeAdapter : ListAdapter<Joke, JokeAdapter.JokeViewHolder>(DiffCallback()) {
+class JokeAdapter(private val listener: OnItemClickListener) : ListAdapter<Joke, JokeAdapter.JokeViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JokeViewHolder {
         val binding = ItemJokeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -21,8 +21,18 @@ class JokeAdapter : ListAdapter<Joke, JokeAdapter.JokeViewHolder>(DiffCallback()
     }
 
 
-    class JokeViewHolder(private val binding: ItemJokeBinding) :
+   inner class JokeViewHolder(private val binding: ItemJokeBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener{
+                val position = adapterPosition
+                if(position != RecyclerView.NO_POSITION){
+                    val joke = getItem(position)
+                    listener.onItemClick(joke)
+                }
+            }
+        }
 
         fun bind(joke: Joke) {
             binding.apply {
@@ -35,12 +45,17 @@ class JokeAdapter : ListAdapter<Joke, JokeAdapter.JokeViewHolder>(DiffCallback()
             }
         }
     }
-}
 
-class DiffCallback : DiffUtil.ItemCallback<Joke>() {
-    override fun areItemsTheSame(oldItem: Joke, newItem: Joke): Boolean = oldItem.id == newItem.id
+    interface OnItemClickListener {
+        fun onItemClick(joke: Joke)
+    }
 
-    override fun areContentsTheSame(oldItem: Joke, newItem: Joke): Boolean = oldItem == newItem
+    class DiffCallback : DiffUtil.ItemCallback<Joke>() {
+        override fun areItemsTheSame(oldItem: Joke, newItem: Joke): Boolean =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: Joke, newItem: Joke): Boolean = oldItem == newItem
+    }
 }
 
 

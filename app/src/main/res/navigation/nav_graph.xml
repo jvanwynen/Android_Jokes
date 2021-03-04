@@ -7,7 +7,24 @@
 
     <fragment
         android:id="@+id/jokesFragment"
-        android:name="com.JoostAndroid.joke_exercise.ui.JokesFragment"
-        android:label="fragment_jokes_list"
-        tools:layout="@layout/fragment_jokes_list" />
+        android:name="com.JoostAndroid.joke_exercise.ui.home.JokesFragment"
+        android:label="Jokes"
+        tools:layout="@layout/fragment_jokes_list">
+        <action
+            android:id="@+id/action_jokesFragment_to_addEditJokeFragment"
+            app:destination="@id/addEditJokeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditJokeFragment"
+        android:name="com.JoostAndroid.joke_exercise.ui.addEdit.AddEditJokeFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_add_edit_jokes" >
+        <argument
+            android:name="joke"
+            app:argType="com.JoostAndroid.joke_exercise.models.Joke"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 </navigation>

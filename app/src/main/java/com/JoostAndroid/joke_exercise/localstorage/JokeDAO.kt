@@ -2,7 +2,6 @@ package com.JoostAndroid.joke_exercise.localstorage
 
 import androidx.room.*
 import com.JoostAndroid.joke_exercise.models.Joke
-import com.JoostAndroid.joke_exercise.ui.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao

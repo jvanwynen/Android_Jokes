@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.JokesFragment"
+    tools:context=".ui.home.JokesFragment"
     android:background="@color/white">
 
     <androidx.recyclerview.widget.RecyclerView
