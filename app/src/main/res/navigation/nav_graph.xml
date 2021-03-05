@@ -27,4 +27,18 @@
             android:name="title"
             app:argType="string" />
     </fragment>
+    <dialog
+        android:id="@+id/deleteAllNonFavoriteDialogFragment"
+        android:name="com.JoostAndroid.joke_exercise.ui.dialog.DeleteDialogFragment"
+        android:label="DeleteAllNonFavoriteDialogFragment" >
+        <argument
+            android:name="message"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="deleteAll"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </dialog>
+    <action android:id="@+id/action_global_deleteAllNonFavoriteDialogFragment" app:destination="@id/deleteAllNonFavoriteDialogFragment" />
 </navigation>

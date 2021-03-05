@@ -53,6 +53,9 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$testExtJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 
+    //material
+    implementation("com.google.android.material:material:$materialVersion")
+
     // Fragment
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
 

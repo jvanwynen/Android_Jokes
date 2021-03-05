@@ -6,6 +6,8 @@ import com.JoostAndroid.joke_exercise.localstorage.JokeDAO
 import com.JoostAndroid.joke_exercise.localstorage.PreferencesRepository
 import com.JoostAndroid.joke_exercise.localstorage.SortOrder
 import com.JoostAndroid.joke_exercise.models.Joke
+import com.JoostAndroid.joke_exercise.ui.ADD_JOKE_RESULT_OK
+import com.JoostAndroid.joke_exercise.ui.EDIT_JOKE_RESULT_OK
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.combine
@@ -65,10 +67,32 @@ class JokeViewModel @Inject constructor(
         jokeEventChannel.send(JokeEvent.NavigateToEditJoke(joke))
     }
 
+    fun onAddEditResult(result: Int){
+        when (result){
+            ADD_JOKE_RESULT_OK -> showJokeSaved("Joke added")
+            EDIT_JOKE_RESULT_OK -> showJokeSaved("Joke updated")
+        }
+    }
+
+    private fun showJokeSaved(msg: String) = viewModelScope.launch {
+        jokeEventChannel.send(JokeEvent.ShowJokeSavedConfirm(msg))
+    }
+
+     fun onDeleteNonFavoriteClicked() = viewModelScope.launch {
+        jokeEventChannel.send(JokeEvent.NavigateToDeleteAllNonFavorite)
+    }
+
+    fun onDeleteAllClicked() = viewModelScope.launch {
+        jokeEventChannel.send(JokeEvent.NavigateToDeleteAll)
+    }
+
     sealed class JokeEvent{
         data class ShowUndoDeleteMessage(val joke: Joke) : JokeEvent()
         object NavigateToAddJoke: JokeEvent()
         data class NavigateToEditJoke(val joke: Joke): JokeEvent()
+        data class ShowJokeSavedConfirm(val msg: String) : JokeEvent()
+        object NavigateToDeleteAllNonFavorite : JokeEvent()
+        object NavigateToDeleteAll : JokeEvent()
     }
 
 }

@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,6 +19,7 @@ import com.JoostAndroid.joke_exercise.databinding.FragmentJokesListBinding
 import com.JoostAndroid.joke_exercise.localstorage.SortOrder
 import com.JoostAndroid.joke_exercise.models.Joke
 import com.JoostAndroid.joke_exercise.ui.JokeAdapter
+import com.JoostAndroid.joke_exercise.ui.dialog.DeleteDialogFragmentDirections
 import com.JoostAndroid.joke_exercise.util.onQueryTextChanged
 import com.JoostAndroid.joke_exercise.util.exhaustive
 import com.google.android.material.snackbar.Snackbar
@@ -66,6 +68,11 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
             }
         }
 
+        setFragmentResultListener("add_edit_request") { _ , bundle ->
+            val result = bundle.get("add_edit_result")
+            viewModel.onAddEditResult(result as Int)
+        }
+
         viewModel.jokes.observe(viewLifecycleOwner) {
             jokeAdapter.submitList(it)
         }
@@ -85,6 +92,17 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
                     }
                     is JokeViewModel.JokeEvent.NavigateToEditJoke -> {
                         val action = JokesFragmentDirections.actionJokesFragmentToAddEditJokeFragment(event.joke, "Edit Joke")
+                        findNavController().navigate(action)
+                    }
+                    is JokeViewModel.JokeEvent.ShowJokeSavedConfirm -> {
+                        Snackbar.make(requireView(), event.msg, Snackbar.LENGTH_LONG).show()
+                    }
+                    JokeViewModel.JokeEvent.NavigateToDeleteAllNonFavorite -> {
+                        val action = DeleteDialogFragmentDirections.actionGlobalDeleteAllNonFavoriteDialogFragment("Do you want to delete all non Favorite Jokes?", false)
+                        findNavController().navigate(action)
+                    }
+                    JokeViewModel.JokeEvent.NavigateToDeleteAll -> {
+                        val action = DeleteDialogFragmentDirections.actionGlobalDeleteAllNonFavoriteDialogFragment("Do you want to delete All Items?", true)
                         findNavController().navigate(action)
                     }
                 }.exhaustive
@@ -129,11 +147,11 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
                 true
             }
             R.id.action_delete_non_favorite -> {
-
+                viewModel.onDeleteNonFavoriteClicked()
                 true
             }
             R.id.action_delete_all -> {
-
+                viewModel.onDeleteAllClicked()
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -31,5 +31,8 @@ interface JokeDAO {
     @Query("DELETE FROM joke")
     suspend fun deleteAll()
 
+    @Query("DELETE FROM joke WHERE favorite = 0")
+    suspend fun deleteAllNonFavorite()
+
 
 }
