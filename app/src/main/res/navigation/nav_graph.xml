@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/jokesFragment"
-        android:name="com.JoostAndroid.joke_exercise.ui.home.JokesFragment"
+        android:name="com.joost.joke_exercise.ui.home.JokesFragment"
         android:label="Jokes"
         tools:layout="@layout/fragment_jokes_list">
         <action
@@ -16,12 +16,12 @@
     </fragment>
     <fragment
         android:id="@+id/addEditJokeFragment"
-        android:name="com.JoostAndroid.joke_exercise.ui.addEdit.AddEditJokeFragment"
+        android:name="com.joost.joke_exercise.ui.addEdit.AddEditJokeFragment"
         android:label="{title}"
         tools:layout="@layout/fragment_add_edit_jokes" >
         <argument
             android:name="joke"
-            app:argType="com.JoostAndroid.joke_exercise.models.Joke"
+            app:argType="com.joost.joke_exercise.models.Joke"
             app:nullable="true" />
         <argument
             android:name="title"
@@ -29,7 +29,7 @@
     </fragment>
     <dialog
         android:id="@+id/deleteAllNonFavoriteDialogFragment"
-        android:name="com.JoostAndroid.joke_exercise.ui.dialog.DeleteDialogFragment"
+        android:name="com.joost.joke_exercise.ui.dialog.DeleteDialogFragment"
         android:label="DeleteAllNonFavoriteDialogFragment" >
         <argument
             android:name="message"
