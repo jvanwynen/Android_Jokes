@@ -15,7 +15,7 @@ private const val TAG = "PreferencesRepository"
 
 enum class SortOrder{BY_NAME, BY_DATE}
 
-data class FilterPreferences(val sortOrder: SortOrder, val hideNonFavorite : Boolean)
+data class FilterPreferences(val sortOrder: SortOrder, val hideNonFavorite : Boolean, val selectedCategories: String)
 
 @Singleton
 class PreferencesRepository @Inject constructor(@ApplicationContext context: Context){
@@ -35,7 +35,8 @@ class PreferencesRepository @Inject constructor(@ApplicationContext context: Con
                 it[PreferencesKeys.SORT_ORDER] ?: SortOrder.BY_DATE.name
             )
             val hideNonFavorite = it[PreferencesKeys.HIDE_NON_FAVORITE] ?: false
-            FilterPreferences(sortOrder, hideNonFavorite)
+            val selectedCategories = it[PreferencesKeys.SELECTED_CATEGORIES] ?: ""
+            FilterPreferences(sortOrder, hideNonFavorite, selectedCategories)
         }
 
     suspend fun updateSortOrder(sortOrder: SortOrder){
@@ -50,9 +51,16 @@ class PreferencesRepository @Inject constructor(@ApplicationContext context: Con
         }
     }
 
+    suspend fun updateSelectedCategories(selectedCategories: String){
+        dataStore.edit {
+            it[PreferencesKeys.SELECTED_CATEGORIES] = selectedCategories
+        }
+    }
+
     private object PreferencesKeys {
         val SORT_ORDER = stringPreferencesKey("sort_order")
         val HIDE_NON_FAVORITE = booleanPreferencesKey("hide_non_favorite")
+        val SELECTED_CATEGORIES = stringPreferencesKey("selected_categories")
     }
 
 }

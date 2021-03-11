@@ -46,9 +46,11 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes){
 
         viewModel.onlineJoke.observe(viewLifecycleOwner){ onlineJoke ->
             binding.apply {
-                jokeTextEdit.setText(onlineJoke?.jokeText ?: "No Joke")
+                viewModel.jokeText = onlineJoke?.jokeText ?: "No Joke Found"
+                viewModel.category = onlineJoke?.category ?: "Programming"
+                jokeTextEdit.setText(viewModel.jokeText)
                 addEditSpinner.setSelectionOnStringValue(
-                    onlineJoke?.category ?: "Spooky"
+                    viewModel.category
                 )
             }
         }

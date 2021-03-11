@@ -8,17 +8,17 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface JokeDAO {
 
-    fun getJokes(query: String, sortOrder: SortOrder, hideNonFavorite: Boolean): Flow<List<Joke>> =
+    fun getJokes(query: String, sortOrder: SortOrder, hideNonFavorite: Boolean, selectedCategory: List<String>): Flow<List<Joke>> =
         when(sortOrder){
-            SortOrder.BY_DATE -> getJokesSortedByDate(query, hideNonFavorite)
-            SortOrder.BY_NAME -> getJokesSortedByName(query, hideNonFavorite)
+            SortOrder.BY_DATE -> getJokesSortedByDate(query, hideNonFavorite, selectedCategory)
+            SortOrder.BY_NAME -> getJokesSortedByName(query, hideNonFavorite, selectedCategory)
         }
 
-    @Query("SELECT * FROM joke WHERE (favorite = :hideNonFavorite OR favorite = 1) AND jokeText LIKE '%' || :searchQuery ||  '%' ORDER BY favorite DESC, UPPER(jokeText) ")
-    fun getJokesSortedByName(searchQuery: String, hideNonFavorite : Boolean): Flow<List<Joke>>
+    @Query("SELECT * FROM joke WHERE (favorite = :hideNonFavorite OR favorite = 1) AND category IN (:selectedCategory) AND jokeText LIKE '%' || :searchQuery ||  '%' ORDER BY favorite DESC, UPPER(jokeText) ")
+    fun getJokesSortedByName(searchQuery: String, hideNonFavorite : Boolean, selectedCategory: List<String>): Flow<List<Joke>>
 
-    @Query("SELECT * FROM joke WHERE (favorite = :hideNonFavorite OR favorite = 1) AND jokeText LIKE '%' || :searchQuery || '%' ORDER BY favorite DESC, created")
-    fun getJokesSortedByDate(searchQuery: String, hideNonFavorite : Boolean): Flow<List<Joke>>
+    @Query("SELECT * FROM joke WHERE (favorite = :hideNonFavorite OR favorite = 1) AND category IN (:selectedCategory) AND jokeText LIKE '%' || :searchQuery || '%' ORDER BY favorite DESC, created")
+    fun getJokesSortedByDate(searchQuery: String, hideNonFavorite : Boolean, selectedCategory: List<String>): Flow<List<Joke>>
 
     @Insert
     suspend fun insert(joke: Joke)

@@ -27,11 +27,13 @@
             android:orientation="vertical">
 
             <CheckBox
+                android:id="@+id/checkbox_prog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Programming" />
 
             <CheckBox
+                android:id="@+id/checkbox_dark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Dark" />
@@ -45,11 +47,13 @@
             android:orientation="vertical">
 
             <CheckBox
+                android:id="@+id/checkbox_spooky"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Spooky" />
 
             <CheckBox
+                android:id="@+id/checkbox_pun"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Pun" />
@@ -63,11 +67,13 @@
             android:orientation="vertical">
 
             <CheckBox
+                android:id="@+id/checkbox_misc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pun" />
+                android:text="Miscellaneous" />
 
             <CheckBox
+                android:id="@+id/checkbox_christ"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Christmas" />

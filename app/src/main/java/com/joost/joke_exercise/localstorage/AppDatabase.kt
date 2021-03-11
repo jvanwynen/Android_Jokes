@@ -27,7 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
 
             applicationScope.launch {
 
-                val cat1 = Category( "programming")
+                val cat1 = Category( "Programming")
                 val cat2 = Category( "Misc")
                 val cat3 = Category( "Dark")
                 val cat4 = Category( "Pun")

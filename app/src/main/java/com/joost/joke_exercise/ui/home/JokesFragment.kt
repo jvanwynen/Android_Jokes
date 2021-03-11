@@ -14,15 +14,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.joost.joke_exercise.R
 import com.joost.joke_exercise.databinding.FragmentJokesListBinding
 import com.joost.joke_exercise.localstorage.SortOrder
 import com.joost.joke_exercise.models.Joke
 import com.joost.joke_exercise.ui.JokeAdapter
 import com.joost.joke_exercise.ui.dialog.DeleteDialogFragmentDirections
-import com.joost.joke_exercise.util.onQueryTextChanged
 import com.joost.joke_exercise.util.exhaustive
-import com.google.android.material.snackbar.Snackbar
+import com.joost.joke_exercise.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -40,6 +40,33 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
         val binding = FragmentJokesListBinding.bind(view)
 
         val jokeAdapter = JokeAdapter(this)
+
+        val selectedCategories = JokeViewModel.SelectedCategories()
+
+        val listener = View.OnClickListener {
+            JokeViewModel.SelectedCategories()
+            when (it) {
+                binding.checkboxDark -> {
+                    selectedCategories.dark = binding.checkboxDark.isChecked
+                }
+                binding.checkboxProg -> {
+                    selectedCategories.prog = binding.checkboxProg.isChecked
+                }
+                binding.checkboxPun -> {
+                    selectedCategories.pun = binding.checkboxPun.isChecked
+                }
+                binding.checkboxSpooky -> {
+                    selectedCategories.spooky = binding.checkboxSpooky.isChecked
+                }
+                binding.checkboxChrist -> {
+                    selectedCategories.christ = binding.checkboxChrist.isChecked
+                }
+                binding.checkboxMisc -> {
+                    selectedCategories.misc = binding.checkboxMisc.isChecked
+                }
+            }
+            viewModel.onCategoriesSelectedChanged(selectedCategories)
+        }
 
         binding.apply {
             recyclerView.apply {
@@ -66,9 +93,15 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
             actionButton.setOnClickListener {
                 viewModel.addNewJokeClicked()
             }
+            checkboxProg.setOnClickListener(listener)
+            checkboxChrist.setOnClickListener(listener)
+            checkboxDark.setOnClickListener(listener)
+            checkboxMisc.setOnClickListener(listener)
+            checkboxPun.setOnClickListener(listener)
+            checkboxSpooky.setOnClickListener(listener)
         }
 
-        setFragmentResultListener("add_edit_request") { _ , bundle ->
+        setFragmentResultListener("add_edit_request") { _, bundle ->
             val result = bundle.get("add_edit_result")
             viewModel.onAddEditResult(result as Int)
         }
@@ -87,11 +120,19 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
                             }.show()
                     }
                     is JokeViewModel.JokeEvent.NavigateToAddJoke -> {
-                        val action = JokesFragmentDirections.actionJokesFragmentToAddEditJokeFragment(null, "New Joke")
+                        val action =
+                            JokesFragmentDirections.actionJokesFragmentToAddEditJokeFragment(
+                                null,
+                                "New Joke"
+                            )
                         findNavController().navigate(action)
                     }
                     is JokeViewModel.JokeEvent.NavigateToEditJoke -> {
-                        val action = JokesFragmentDirections.actionJokesFragmentToAddEditJokeFragment(event.joke, "Edit Joke")
+                        val action =
+                            JokesFragmentDirections.actionJokesFragmentToAddEditJokeFragment(
+                                event.joke,
+                                "Edit Joke"
+                            )
                         findNavController().navigate(action)
                     }
                     is JokeViewModel.JokeEvent.ShowJokeSavedConfirm -> {
@@ -100,13 +141,15 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
                     JokeViewModel.JokeEvent.NavigateToDeleteAllNonFavorite -> {
                         val action = DeleteDialogFragmentDirections
                             .actionGlobalDeleteAllNonFavoriteDialogFragment(
-                                "Do you want to delete all non Favorite Jokes?", false)
+                                "Do you want to delete all non Favorite Jokes?", false
+                            )
                         findNavController().navigate(action)
                     }
                     JokeViewModel.JokeEvent.NavigateToDeleteAll -> {
                         val action = DeleteDialogFragmentDirections
                             .actionGlobalDeleteAllNonFavoriteDialogFragment(
-                                "Do you want to delete All Items?", true)
+                                "Do you want to delete All Items?", true
+                            )
                         findNavController().navigate(action)
                     }
                 }.exhaustive

@@ -34,11 +34,18 @@ class JokeViewModel @Inject constructor(
     private val jokeFlow = combine(
         searchQuery.asFlow(),
         preferencesFlow
-    ) { query, filterPreferences ->
+    )
+    { query, filterPreferences ->
         Pair(query, filterPreferences)
-    }.flatMapLatest { (query, filterPreferences) ->
-      jokeDao.getJokes(query, filterPreferences.sortOrder, filterPreferences.hideNonFavorite)
     }
+        .flatMapLatest { (query, filterPreferences) ->
+            jokeDao.getJokes(
+                query,
+                filterPreferences.sortOrder,
+                filterPreferences.hideNonFavorite,
+                filterPreferences.selectedCategories.split(",")
+            )
+        }
 
     val jokes = jokeFlow.asLiveData()
 
@@ -46,8 +53,13 @@ class JokeViewModel @Inject constructor(
         preferencesRepository.updateSortOrder(sortOrder)
     }
 
-    fun onHidingSelected(hideNonFavorite : Boolean) = viewModelScope.launch {
+    fun onHidingSelected(hideNonFavorite: Boolean) = viewModelScope.launch {
         preferencesRepository.updateHideNonFavorite(hideNonFavorite)
+    }
+
+    fun onCategoriesSelectedChanged(selectedCategories: SelectedCategories) =  viewModelScope.launch {
+        val  test = selectedCategories.toString()
+        preferencesRepository.updateSelectedCategories(test)
     }
 
     fun onJokeSwiped(joke: Joke) = viewModelScope.launch {
@@ -67,8 +79,8 @@ class JokeViewModel @Inject constructor(
         jokeEventChannel.send(JokeEvent.NavigateToEditJoke(joke))
     }
 
-    fun onAddEditResult(result: Int){
-        when (result){
+    fun onAddEditResult(result: Int) {
+        when (result) {
             ADD_JOKE_RESULT_OK -> showJokeSaved("Joke added")
             EDIT_JOKE_RESULT_OK -> showJokeSaved("Joke updated")
         }
@@ -78,7 +90,7 @@ class JokeViewModel @Inject constructor(
         jokeEventChannel.send(JokeEvent.ShowJokeSavedConfirm(msg))
     }
 
-     fun onDeleteNonFavoriteClicked() = viewModelScope.launch {
+    fun onDeleteNonFavoriteClicked() = viewModelScope.launch {
         jokeEventChannel.send(JokeEvent.NavigateToDeleteAllNonFavorite)
     }
 
@@ -86,13 +98,49 @@ class JokeViewModel @Inject constructor(
         jokeEventChannel.send(JokeEvent.NavigateToDeleteAll)
     }
 
-    sealed class JokeEvent{
+    sealed class JokeEvent {
         data class ShowUndoDeleteMessage(val joke: Joke) : JokeEvent()
-        object NavigateToAddJoke: JokeEvent()
-        data class NavigateToEditJoke(val joke: Joke): JokeEvent()
+        object NavigateToAddJoke : JokeEvent()
+        data class NavigateToEditJoke(val joke: Joke) : JokeEvent()
         data class ShowJokeSavedConfirm(val msg: String) : JokeEvent()
         object NavigateToDeleteAllNonFavorite : JokeEvent()
         object NavigateToDeleteAll : JokeEvent()
+    }
+
+    data class SelectedCategories(
+        var prog: Boolean = false,
+        var dark: Boolean = false,
+        var misc: Boolean = false,
+        var spooky: Boolean = false,
+        var christ: Boolean = false,
+        var pun: Boolean = false
+    ) {
+
+        override fun toString(): String {
+            var finalString = ""
+            if (prog){
+                finalString += "Programming,"
+            }
+            if (dark){
+                finalString += "Dark,"
+            }
+            if (misc){
+                finalString += "Misc,"
+            }
+            if (pun){
+                finalString += "Pun,"
+            }
+            if (christ){
+                finalString += "Christmas,"
+            }
+            if (spooky){
+                finalString += "Spooky,"
+            }
+            finalString = finalString.removeSuffix(",")
+            return  finalString
+        }
+
+
     }
 
 }
