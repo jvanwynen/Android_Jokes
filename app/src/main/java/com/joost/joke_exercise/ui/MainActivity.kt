@@ -2,6 +2,8 @@ package com.joost.joke_exercise.ui
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment

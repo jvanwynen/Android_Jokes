@@ -2,8 +2,8 @@ package com.joost.joke_exercise.ui.addEdit
 
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.joost.joke_exercise.R
 import com.joost.joke_exercise.databinding.FragmentAddEditJokesBinding
 import com.joost.joke_exercise.util.exhaustive
+import com.joost.joke_exercise.util.setSelectionOnStringValue
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
@@ -32,20 +33,22 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes){
 
         viewModel.categories.observe(viewLifecycleOwner) {
             binding.apply {
-                addEditSpinner.apply {
-                    isClickable = viewModel.editOrNew()
-                    isEnabled = viewModel.editOrNew()
-                }
                 addEditSpinner.adapter = ArrayAdapter(
                     requireContext(),
                     android.R.layout.simple_spinner_dropdown_item,
                     it
                 )
-                addEditSpinner.setSelection(
-                    viewModel.getIndex(
-                        addEditSpinner,
-                        viewModel.joke?.category
-                    )
+                addEditSpinner.setSelectionOnStringValue(
+                    viewModel.category
+                )
+            }
+        }
+
+        viewModel.onlineJoke.observe(viewLifecycleOwner){ onlineJoke ->
+            binding.apply {
+                jokeTextEdit.setText(onlineJoke?.jokeText ?: "No Joke")
+                addEditSpinner.setSelectionOnStringValue(
+                    onlineJoke?.category ?: "Spooky"
                 )
             }
         }
@@ -54,12 +57,12 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes){
             jokeTextEdit.setText(viewModel.jokeText)
             isFavoriteEdit.isChecked = viewModel.jokeFavorite
             isFavoriteEdit.jumpDrawablesToCurrentState()
-            dateCreatedEdit.isVisible = viewModel.editOrNew()
-            addEditButtonOnline.isVisible = viewModel.editOrNew()
-            addEditSpinnerText.isVisible = viewModel.editOrNew()
+            dateCreatedEdit.isVisible = viewModel.joke != null
+            addEditButtonOnline.isVisible = viewModel.joke == null
+            addEditSpinnerText.isVisible = viewModel.joke == null
             dateCreatedEdit.text = "Created: ${viewModel.joke?.createFormattedDate}"
 
-            jokeTextEdit.addTextChangedListener{
+            jokeTextEdit.addTextChangedListener {
                 viewModel.jokeText = it.toString()
             }
 
@@ -73,6 +76,47 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes){
 
             addEditButtonOnline.setOnClickListener {
                 viewModel.onOnlineClick()
+            }
+
+
+            addEditButtonGet.setOnClickListener {
+                //TODO: improve
+                var selectedCategories = ""
+                if(binding.addEditCheckSpooky.isChecked){
+                    selectedCategories += binding.addEditCheckSpooky.text.toString() + ","
+                }
+
+                if(binding.addEditCheckPun.isChecked){
+                    selectedCategories += binding.addEditCheckPun.text.toString()+ ","
+                }
+
+                if(binding.addEditCheckProg.isChecked){
+                    selectedCategories += binding.addEditCheckProg.text.toString() + ","
+                }
+
+                if(binding.addEditCheckChrist.isChecked){
+                    selectedCategories += binding.addEditCheckChrist.text.toString()+ ","
+                }
+
+                if(binding.addEditCheckMisc.isChecked){
+                    selectedCategories += binding.addEditCheckMisc.text.toString()+ ","
+                }
+
+                if(binding.addEditCheckDark.isChecked){
+                    selectedCategories += binding.addEditCheckDark.text.toString()+ ","
+                }
+                viewModel.getOnlineJoke(selectedCategories.removeSuffix(","))
+            }
+
+            addEditSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                    if (parent != null) {
+                        viewModel.category = parent.getItemAtPosition(position).toString()
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
             }
         }
 

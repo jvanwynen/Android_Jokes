@@ -9,15 +9,13 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_edit_button_online"
+        android:layout_margin="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.48000002">
+        app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/joke_text_edit"
@@ -43,15 +41,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:text="Choose a category" />
+            android:text="Choose a category"
+            android:textColor="@color/white" />
 
         <Spinner
             android:id="@+id/add_edit_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            />
+            android:layout_gravity="center_horizontal" />
 
 
     </LinearLayout>
@@ -63,10 +60,8 @@
         android:layout_width="277dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="87dp"
-        android:layout_marginBottom="428dp"
         android:text="Get Online Joke"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
@@ -81,8 +76,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_edit_layout_selection" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/add_edit_layout_selection"
@@ -117,19 +111,19 @@
                     android:id="@+id/add_edit_check_prog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CheckBox" />
+                    android:text="Programming" />
 
                 <CheckBox
                     android:id="@+id/add_edit_check_misc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CheckBox" />
+                    android:text="Miscellaneous" />
 
                 <CheckBox
                     android:id="@+id/add_edit_check_dark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CheckBox" />
+                    android:text="Dark" />
             </LinearLayout>
 
             <LinearLayout
@@ -141,19 +135,19 @@
                     android:id="@+id/add_edit_check_pun"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CheckBox" />
+                    android:text="Pun" />
 
                 <CheckBox
                     android:id="@+id/add_edit_check_spooky"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CheckBox" />
+                    android:text="Spooky" />
 
                 <CheckBox
                     android:id="@+id/add_edit_check_christ"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CheckBox" />
+                    android:text="Christmas" />
             </LinearLayout>
 
         </LinearLayout>

@@ -37,7 +37,7 @@ class JokeViewModel @Inject constructor(
     ) { query, filterPreferences ->
         Pair(query, filterPreferences)
     }.flatMapLatest { (query, filterPreferences) ->
-        jokeDao.getJokes(query, filterPreferences.sortOrder, filterPreferences.hideNonFavorite)
+      jokeDao.getJokes(query, filterPreferences.sortOrder, filterPreferences.hideNonFavorite)
     }
 
     val jokes = jokeFlow.asLiveData()

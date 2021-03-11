@@ -14,7 +14,7 @@ interface JokeDAO {
             SortOrder.BY_NAME -> getJokesSortedByName(query, hideNonFavorite)
         }
 
-    @Query("SELECT * FROM joke WHERE (favorite = :hideNonFavorite OR favorite = 1) AND jokeText LIKE '%' || :searchQuery || '%' ORDER BY favorite DESC, jokeText")
+    @Query("SELECT * FROM joke WHERE (favorite = :hideNonFavorite OR favorite = 1) AND jokeText LIKE '%' || :searchQuery ||  '%' ORDER BY favorite DESC, UPPER(jokeText) ")
     fun getJokesSortedByName(searchQuery: String, hideNonFavorite : Boolean): Flow<List<Joke>>
 
     @Query("SELECT * FROM joke WHERE (favorite = :hideNonFavorite OR favorite = 1) AND jokeText LIKE '%' || :searchQuery || '%' ORDER BY favorite DESC, created")
@@ -41,8 +41,8 @@ interface JokeDAO {
     @Query("SELECT * FROM category")
     fun getCategories(): Flow<List<Category>>
 
-    @Query("SELECT * FROM CATEGORY INNER JOIN joke ON category.category = joke.category WHERE category.category = :category")
-    fun getCategoryOfJoke(category: String): Flow<List<Category>>
+    @Query("SELECT category FROM joke")
+    fun getCategoryOfJoke(): Flow<List<Category>>
 
 //    @Transaction
 //    @Query("SELECT * FROM category WHERE category = :category")

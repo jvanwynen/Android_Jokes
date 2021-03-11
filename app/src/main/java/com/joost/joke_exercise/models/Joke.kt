@@ -3,6 +3,7 @@ package com.joost.joke_exercise.models
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.text.DateFormat
 
@@ -12,6 +13,7 @@ data class Joke(
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    @SerializedName("joke")
     val jokeText: String,
     val favorite: Boolean = false,
     val created: Long = System.currentTimeMillis(),

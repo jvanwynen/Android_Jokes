@@ -2,7 +2,9 @@ package com.joost.joke_exercise.di
 
 import android.app.Application
 import androidx.room.Room
+import com.joost.joke_exercise.api.JokeApi
 import com.joost.joke_exercise.localstorage.AppDatabase
+import com.joost.joke_exercise.models.Joke
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,6 +12,8 @@ import javax.inject.Singleton
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -32,11 +36,16 @@ object AppModule {
     @Singleton
     fun provideApplicationScope() = CoroutineScope(SupervisorJob())
 
+    @Provides
+    @Singleton
+    fun provideRetrofit() : Retrofit =
+        Retrofit.Builder()
+            .baseUrl(JokeApi.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-
-
-
-
-
-
+    @Provides
+    @Singleton
+    fun provideJokeApi(retrofit: Retrofit): JokeApi =
+        retrofit.create(JokeApi::class.java)
 }

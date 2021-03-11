@@ -1,11 +1,8 @@
 package com.joost.joke_exercise.ui.addEdit
 
 
-import android.widget.Spinner
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.joost.joke_exercise.api.JokeRepository
 import com.joost.joke_exercise.localstorage.JokeDAO
 import com.joost.joke_exercise.models.Joke
 import com.joost.joke_exercise.ui.ADD_JOKE_RESULT_OK
@@ -14,20 +11,28 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-
 import javax.inject.Inject
 
 @HiltViewModel
 class AddEditJokeViewModel @Inject constructor(
     private val jokeDAO: JokeDAO,
+    private val jokeRepository: JokeRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val joke = savedStateHandle.get<Joke>("joke")
 
+    val onlineJoke: MutableLiveData<Joke> = MutableLiveData()
+
     private val categoryFlow = jokeDAO.getCategories()
 
     val categories = categoryFlow.asLiveData()
+
+    var category = savedStateHandle.get<String>("category") ?: joke?.category ?: ""
+        set(value) {
+            field = value
+            savedStateHandle.set("category", value)
+        }
 
     var jokeText = savedStateHandle.get<String>("jokeText") ?: joke?.jokeText ?: ""
         set(value) {
@@ -41,6 +46,7 @@ class AddEditJokeViewModel @Inject constructor(
         }
 
     private val addEditJokeChannel = Channel<AddEditJokeEvent>()
+
     val addEditJokeEvent = addEditJokeChannel.receiveAsFlow()
 
     fun onSaveClick() {
@@ -49,14 +55,20 @@ class AddEditJokeViewModel @Inject constructor(
             return
         }
         if (joke != null) {
-            val updatedJoke = joke.copy(jokeText = jokeText, favorite = jokeFavorite)
+            val updatedJoke =
+                joke.copy(jokeText = jokeText, favorite = jokeFavorite, category = category)
             updateJoke(updatedJoke)
         } else {
             val newJoke =
-                Joke(jokeText = jokeText, favorite = jokeFavorite, category = "Programming")
+                Joke(jokeText = jokeText, favorite = jokeFavorite, category = category)
             createJoke(newJoke)
         }
     }
+
+    fun getOnlineJoke(path: String) = viewModelScope.launch {
+        onlineJoke.value = jokeRepository.getOnlineJoke(path)
+    }
+
 
     private fun createJoke(joke: Joke) = viewModelScope.launch {
         jokeDAO.insert(joke)
@@ -75,18 +87,6 @@ class AddEditJokeViewModel @Inject constructor(
     fun onOnlineClick() = viewModelScope.launch {
         addEditJokeChannel.send(AddEditJokeEvent.ShowSelection)
     }
-
-    fun getIndex(spinner: Spinner, myString: String?): Int {
-        for (i in 0 until spinner.count) {
-            if (spinner.getItemAtPosition(i).toString().equals(myString, ignoreCase = true)) {
-                return i
-            }
-        }
-        return 0
-    }
-
-    //true if new, false if edit
-    fun editOrNew(): Boolean = joke == null
 
     sealed class AddEditJokeEvent {
         data class InvalidInput(val msg: String) : AddEditJokeEvent()

@@ -25,7 +25,6 @@ abstract class AppDatabase : RoomDatabase() {
 
             val dao = database.get().jokeDao()
 
-
             applicationScope.launch {
 
                 val cat1 = Category( "programming")
