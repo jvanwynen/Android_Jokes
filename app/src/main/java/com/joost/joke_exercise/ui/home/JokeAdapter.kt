@@ -13,7 +13,6 @@ import com.joost.joke_exercise.databinding.ItemJokeBinding
 import com.joost.joke_exercise.models.Joke
 
 class JokeAdapter(
-    private val shortListener: OnItemClickListener,
     private val longListener: OnItemLongClickListener
 ) : ListAdapter<Joke, JokeAdapter.JokeViewHolder>(DiffCallback()) {
 
@@ -38,13 +37,6 @@ class JokeAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val joke = getItem(position)
-                    shortListener.onItemClick(joke)
-                }
-            }
             binding.root.setOnLongClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {

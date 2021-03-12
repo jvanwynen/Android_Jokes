@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItemClickListener,
+class JokesFragment : Fragment(R.layout.fragment_jokes_list),
     JokeAdapter.OnItemLongClickListener {
 
     private lateinit var binding: FragmentJokesListBinding
@@ -42,7 +42,7 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
 
         binding = FragmentJokesListBinding.bind(view)
 
-        val jokeAdapter = JokeAdapter(this, this)
+        val jokeAdapter = JokeAdapter(this)
 
         val selectedCategories = JokeViewModel.SelectedCategories()
 
@@ -159,10 +159,6 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
             }
         }
         setHasOptionsMenu(true)
-    }
-
-    override fun onItemClick(joke: Joke) {
-        //
     }
 
     override fun onItemLongClick(joke: Joke) {

@@ -62,6 +62,10 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes) {
                 viewModel.jokeText = it.toString()
             }
 
+            jokeTextDelivery.addTextChangedListener {
+                viewModel.delivery = it.toString()
+            }
+
             isFavoriteEdit.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.jokeFavorite = isChecked
             }
