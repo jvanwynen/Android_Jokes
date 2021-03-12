@@ -30,16 +30,19 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItemClickListener {
+class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItemClickListener,
+    JokeAdapter.OnItemLongClickListener {
+
+    private lateinit var binding: FragmentJokesListBinding
 
     private val viewModel: JokeViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentJokesListBinding.bind(view)
+        binding = FragmentJokesListBinding.bind(view)
 
-        val jokeAdapter = JokeAdapter(this)
+        val jokeAdapter = JokeAdapter(this, this)
 
         val selectedCategories = JokeViewModel.SelectedCategories()
 
@@ -159,6 +162,10 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list), JokeAdapter.OnItem
     }
 
     override fun onItemClick(joke: Joke) {
+        //
+    }
+
+    override fun onItemLongClick(joke: Joke) {
         viewModel.onJokeSelected(joke)
     }
 

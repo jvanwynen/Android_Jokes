@@ -24,6 +24,14 @@
             android:hint="Fill in The Joke"
             android:inputType="textMultiLine" />
 
+        <EditText
+            android:id="@+id/joke_text_delivery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="(Optional) Fill in the delivery for two part joke"
+            android:inputType="textMultiLine"
+            />
+
         <CheckBox
             android:id="@+id/isFavorite_edit"
             android:layout_width="match_parent"
@@ -94,7 +102,7 @@
             android:id="@+id/add_edit_catexplain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose a Category for the online Joke" />
+            android:text="Select a flag you dont want jokes about" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -111,19 +119,19 @@
                     android:id="@+id/add_edit_check_prog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Programming" />
+                    android:text="nsfw" />
 
                 <CheckBox
                     android:id="@+id/add_edit_check_misc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Miscellaneous" />
+                    android:text="religious" />
 
                 <CheckBox
                     android:id="@+id/add_edit_check_dark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dark" />
+                    android:text="political" />
             </LinearLayout>
 
             <LinearLayout
@@ -135,22 +143,30 @@
                     android:id="@+id/add_edit_check_pun"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Pun" />
+                    android:text="racist" />
 
                 <CheckBox
                     android:id="@+id/add_edit_check_spooky"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Spooky" />
+                    android:text="sexist" />
 
                 <CheckBox
                     android:id="@+id/add_edit_check_christ"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Christmas" />
+                    android:text="explicit" />
             </LinearLayout>
 
         </LinearLayout>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/add_edit_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Single or two part joke" />
+
 
         <Button
             android:id="@+id/add_edit_button_get"

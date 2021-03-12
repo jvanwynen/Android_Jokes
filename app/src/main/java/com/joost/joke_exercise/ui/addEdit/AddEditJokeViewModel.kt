@@ -1,10 +1,14 @@
 package com.joost.joke_exercise.ui.addEdit
 
 
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.joost.joke_exercise.api.JokeRepository
 import com.joost.joke_exercise.localstorage.JokeDAO
 import com.joost.joke_exercise.models.Joke
+import com.joost.joke_exercise.models.JokeApiResponse
 import com.joost.joke_exercise.ui.ADD_JOKE_RESULT_OK
 import com.joost.joke_exercise.ui.EDIT_JOKE_RESULT_OK
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +26,6 @@ class AddEditJokeViewModel @Inject constructor(
 
     val joke = savedStateHandle.get<Joke>("joke")
 
-    val onlineJoke: MutableLiveData<Joke> = MutableLiveData()
-
     private val categoryFlow = jokeDAO.getCategories()
 
     val categories = categoryFlow.asLiveData()
@@ -39,6 +41,14 @@ class AddEditJokeViewModel @Inject constructor(
             field = value
             savedStateHandle.set("jokeText", value)
         }
+
+    var delivery = savedStateHandle.get<String>("delivery") ?: joke?.delivery ?: ""
+        set(value) {
+            field = value
+            savedStateHandle.set("delivery", value)
+        }
+
+
     var jokeFavorite = savedStateHandle.get<Boolean>("jokeFavorite") ?: joke?.favorite ?: false
         set(value) {
             field = value
@@ -49,6 +59,7 @@ class AddEditJokeViewModel @Inject constructor(
 
     val addEditJokeEvent = addEditJokeChannel.receiveAsFlow()
 
+    //Method to deal with the save button clicked
     fun onSaveClick() {
         if (jokeText.isEmpty()) {
             showInvalidInputMessage("Empty jokes are not funny")
@@ -56,18 +67,29 @@ class AddEditJokeViewModel @Inject constructor(
         }
         if (joke != null) {
             val updatedJoke =
-                joke.copy(jokeText = jokeText, favorite = jokeFavorite, category = category)
+                joke.copy(
+                    jokeText = jokeText,
+                    favorite = jokeFavorite,
+                    category = category,
+                    delivery = delivery
+                )
             updateJoke(updatedJoke)
         } else {
             val newJoke =
-                Joke(jokeText = jokeText, favorite = jokeFavorite, category = category)
+                Joke(
+                    jokeText = jokeText,
+                    favorite = jokeFavorite,
+                    category = category,
+                    delivery = delivery
+                )
             createJoke(newJoke)
         }
     }
 
-    fun getOnlineJoke(path: String) = viewModelScope.launch {
-        onlineJoke.value = jokeRepository.getOnlineJoke(path)
-    }
+    fun getOnlineJoke(category: String, flags: List<String>, type: Boolean) =
+        viewModelScope.launch {
+            resultToJoke(jokeRepository.getOnlineJoke(category, flags, booleanTypeToString(type)))
+        }
 
 
     private fun createJoke(joke: Joke) = viewModelScope.launch {
@@ -84,6 +106,40 @@ class AddEditJokeViewModel @Inject constructor(
         addEditJokeChannel.send(AddEditJokeEvent.InvalidInput(msg))
     }
 
+    private fun booleanTypeToString(type: Boolean) = if (type) {
+        "twopart"
+    } else {
+        "single"
+    }
+
+    /*
+    Method to turn the result from the Joke API in to Joke object, necessary because result may vary
+     */
+    private fun resultToJoke(result: JokeApiResponse?) = viewModelScope.launch {
+        if (result != null) {
+            if (result.joke?.isEmpty() == false) {
+                addEditJokeChannel.send(
+                    AddEditJokeEvent.JokeFromInternetResult(
+                        Joke(
+                            jokeText = result.joke,
+                            category = result.category
+                        )
+                    )
+                )
+            } else {
+                addEditJokeChannel.send(
+                    AddEditJokeEvent.JokeFromInternetResult(
+                        Joke(
+                            jokeText = result.setup ?: "",
+                            delivery = result.delivery ?: "",
+                            category = result.category
+                        )
+                    )
+                )
+            }
+        }
+    }
+
     fun onOnlineClick() = viewModelScope.launch {
         addEditJokeChannel.send(AddEditJokeEvent.ShowSelection)
     }
@@ -91,6 +147,7 @@ class AddEditJokeViewModel @Inject constructor(
     sealed class AddEditJokeEvent {
         data class InvalidInput(val msg: String) : AddEditJokeEvent()
         data class NavigateBackResult(val result: Int) : AddEditJokeEvent()
+        data class JokeFromInternetResult(val joke: Joke) : AddEditJokeEvent()
         object ShowSelection : AddEditJokeEvent()
     }
 

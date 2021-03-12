@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.joost.joke_exercise.R
 import com.joost.joke_exercise.databinding.FragmentAddEditJokesBinding
+import com.joost.joke_exercise.models.Joke
 import com.joost.joke_exercise.util.exhaustive
 import com.joost.joke_exercise.util.setSelectionOnStringValue
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,15 +23,18 @@ import kotlinx.coroutines.flow.collect
 
 
 @AndroidEntryPoint
-class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes){
+class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes) {
 
     private val viewModel: AddEditJokeViewModel by viewModels()
+
+    private lateinit var binding: FragmentAddEditJokesBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentAddEditJokesBinding.bind(view)
+        binding = FragmentAddEditJokesBinding.bind(view)
 
+        //fill spinner with all available categories from database
         viewModel.categories.observe(viewLifecycleOwner) {
             binding.apply {
                 addEditSpinner.adapter = ArrayAdapter(
@@ -44,19 +48,9 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes){
             }
         }
 
-        viewModel.onlineJoke.observe(viewLifecycleOwner){ onlineJoke ->
-            binding.apply {
-                viewModel.jokeText = onlineJoke?.jokeText ?: "No Joke Found"
-                viewModel.category = onlineJoke?.category ?: "Programming"
-                jokeTextEdit.setText(viewModel.jokeText)
-                addEditSpinner.setSelectionOnStringValue(
-                    viewModel.category
-                )
-            }
-        }
-
         binding.apply {
             jokeTextEdit.setText(viewModel.jokeText)
+            jokeTextDelivery.setText(viewModel.delivery)
             isFavoriteEdit.isChecked = viewModel.jokeFavorite
             isFavoriteEdit.jumpDrawablesToCurrentState()
             dateCreatedEdit.isVisible = viewModel.joke != null
@@ -83,45 +77,57 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes){
 
             addEditButtonGet.setOnClickListener {
                 //TODO: improve
-                var selectedCategories = ""
-                if(binding.addEditCheckSpooky.isChecked){
-                    selectedCategories += binding.addEditCheckSpooky.text.toString() + ","
+                val selectedCategories = mutableListOf<String>()
+                if (binding.addEditCheckSpooky.isChecked) {
+                    selectedCategories.add(binding.addEditCheckSpooky.text.toString())
                 }
 
-                if(binding.addEditCheckPun.isChecked){
-                    selectedCategories += binding.addEditCheckPun.text.toString()+ ","
+                if (binding.addEditCheckPun.isChecked) {
+                    selectedCategories.add(binding.addEditCheckPun.text.toString())
                 }
 
-                if(binding.addEditCheckProg.isChecked){
-                    selectedCategories += binding.addEditCheckProg.text.toString() + ","
+                if (binding.addEditCheckProg.isChecked) {
+                    selectedCategories.add(binding.addEditCheckProg.text.toString())
                 }
 
-                if(binding.addEditCheckChrist.isChecked){
-                    selectedCategories += binding.addEditCheckChrist.text.toString()+ ","
+                if (binding.addEditCheckChrist.isChecked) {
+                    selectedCategories.add(binding.addEditCheckChrist.text.toString())
                 }
 
-                if(binding.addEditCheckMisc.isChecked){
-                    selectedCategories += binding.addEditCheckMisc.text.toString()+ ","
+                if (binding.addEditCheckMisc.isChecked) {
+                    selectedCategories.add(binding.addEditCheckMisc.text.toString())
                 }
 
-                if(binding.addEditCheckDark.isChecked){
-                    selectedCategories += binding.addEditCheckDark.text.toString()+ ","
+                if (binding.addEditCheckDark.isChecked) {
+                    selectedCategories.add(binding.addEditCheckDark.text.toString())
                 }
-                viewModel.getOnlineJoke(selectedCategories.removeSuffix(","))
+                viewModel.getOnlineJoke(
+                    binding.addEditSpinner.selectedItem.toString(),
+                    selectedCategories,
+                    binding.addEditSwitch.isChecked
+                )
             }
 
+            //save the selected category of spinner
             addEditSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    p1: View?,
+                    position: Int,
+                    p3: Long
+                ) {
                     if (parent != null) {
                         viewModel.category = parent.getItemAtPosition(position).toString()
                     }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
+
                 }
             }
         }
 
+        //Get event from ViewModel and react accordingly
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.addEditJokeEvent.collect { event ->
                 when (event) {
@@ -140,8 +146,25 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes){
                         binding.addEditLayoutSelection.isVisible =
                             !binding.addEditLayoutSelection.isVisible
                     }
+                    is AddEditJokeViewModel.AddEditJokeEvent.JokeFromInternetResult -> {
+                        displayOnlineJoke(event.joke)
+                    }
                 }.exhaustive
             }
+        }
+    }
+
+    //Displays the content of the online joke
+    private fun displayOnlineJoke(onlineJoke: Joke) {
+        binding.apply {
+            viewModel.jokeText = onlineJoke.jokeText
+            viewModel.delivery = onlineJoke.delivery
+            viewModel.category = onlineJoke.category
+            jokeTextEdit.setText(viewModel.jokeText)
+            jokeTextDelivery.setText(viewModel.delivery)
+            addEditSpinner.setSelectionOnStringValue(
+                viewModel.category
+            )
         }
     }
 }

@@ -13,9 +13,9 @@ data class Joke(
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    @SerializedName("joke")
     val jokeText: String,
     val favorite: Boolean = false,
+    val delivery: String = "",
     val created: Long = System.currentTimeMillis(),
     val category: String
 
