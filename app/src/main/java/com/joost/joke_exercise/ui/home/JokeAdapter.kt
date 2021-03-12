@@ -34,7 +34,6 @@ class JokeAdapter(
 
     }
 
-
     inner class JokeViewHolder(val binding: ItemJokeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
