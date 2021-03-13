@@ -24,16 +24,9 @@ class JokeAdapter(
     override fun onBindViewHolder(holder: JokeViewHolder, position: Int) {
         val current = getItem(position)
         holder.bind(current, holder.itemView.context)
-
-        holder.itemView.setOnClickListener {
-            if (current.delivery.isNotEmpty()) {
-                holder.binding.delivery.isVisible = !holder.binding.delivery.isVisible
-            }
-        }
-
     }
 
-    inner class JokeViewHolder(val binding: ItemJokeBinding) :
+    inner class JokeViewHolder(private val binding: ItemJokeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -44,6 +37,16 @@ class JokeAdapter(
                     longListener.onItemLongClick(joke)
                 }
                 true
+            }
+
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val current = getItem(position)
+                    if (current.delivery.isNotEmpty()) {
+                        binding.delivery.isVisible = !binding.delivery.isVisible
+                    }
+                }
             }
         }
 
