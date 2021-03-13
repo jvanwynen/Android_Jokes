@@ -8,7 +8,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface JokeDAO {
 
-    fun getJokes(query: String, sortOrder: SortOrder, hideNonFavorite: Boolean, selectedCategory: List<String>): Flow<List<Joke>> =
+    fun getJokes(query: String,
+                 sortOrder: SortOrder,
+                 hideNonFavorite: Boolean,
+                 selectedCategory: List<String>
+    ): Flow<List<Joke>> =
         when(sortOrder){
             SortOrder.BY_DATE -> getJokesSortedByDate(query, hideNonFavorite, selectedCategory)
             SortOrder.BY_NAME -> getJokesSortedByName(query, hideNonFavorite, selectedCategory)

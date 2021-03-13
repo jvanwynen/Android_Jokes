@@ -2,6 +2,8 @@ package com.joost.joke_exercise.ui.home
 
 
 import androidx.lifecycle.*
+import com.joost.joke_exercise.api.JokeRepository
+import com.joost.joke_exercise.localstorage.FilterPreferences
 import com.joost.joke_exercise.localstorage.JokeDAO
 import com.joost.joke_exercise.localstorage.PreferencesRepository
 import com.joost.joke_exercise.localstorage.SortOrder
@@ -10,6 +12,7 @@ import com.joost.joke_exercise.ui.ADD_JOKE_RESULT_OK
 import com.joost.joke_exercise.ui.EDIT_JOKE_RESULT_OK
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -18,8 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class JokeViewModel @Inject constructor(
-    private val jokeDao: JokeDAO,
     private val preferencesRepository: PreferencesRepository,
+    private val jokeRepository: JokeRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -39,12 +42,7 @@ class JokeViewModel @Inject constructor(
         Pair(query, filterPreferences)
     }
         .flatMapLatest { (query, filterPreferences) ->
-            jokeDao.getJokes(
-                query,
-                filterPreferences.sortOrder,
-                filterPreferences.hideNonFavorite,
-                filterPreferences.selectedCategories.split(",")
-            )
+            jokeRepository.getJokesFromDatabase(query, filterPreferences)
         }
 
     val jokes = jokeFlow.asLiveData()
@@ -53,22 +51,41 @@ class JokeViewModel @Inject constructor(
         preferencesRepository.updateSortOrder(sortOrder)
     }
 
+    fun onProgrammingSelected(showProg: Boolean) = viewModelScope.launch {
+        preferencesRepository.updateShowProgramming(showProg)
+    }
+
+    fun onDarkSelected(showDark: Boolean) = viewModelScope.launch {
+        preferencesRepository.updateShowDark(showDark)
+    }
+
+    fun onSpooky(showSpooky: Boolean) = viewModelScope.launch {
+        preferencesRepository.updateShowSpooky(showSpooky)
+    }
+
+    fun onPun(showPun: Boolean) = viewModelScope.launch {
+        preferencesRepository.updateShowPun(showPun)
+    }
+
+    fun onChristmasSelected(showChristmas: Boolean) = viewModelScope.launch {
+        preferencesRepository.updateShowChrist(showChristmas)
+    }
+
+    fun onMiscSelected(showMisc: Boolean) = viewModelScope.launch {
+        preferencesRepository.updateShowMisc(showMisc)
+    }
+
     fun onHidingSelected(hideNonFavorite: Boolean) = viewModelScope.launch {
         preferencesRepository.updateHideNonFavorite(hideNonFavorite)
     }
 
-    fun onCategoriesSelectedChanged(selectedCategories: SelectedCategories) =  viewModelScope.launch {
-        val  test = selectedCategories.toString()
-        preferencesRepository.updateSelectedCategories(test)
-    }
-
     fun onJokeSwiped(joke: Joke) = viewModelScope.launch {
-        jokeDao.delete(joke)
+        jokeRepository.deleteJokeFromDatabase(joke)
         jokeEventChannel.send(JokeEvent.ShowUndoDeleteMessage(joke))
     }
 
     fun onUndoDeleteClicked(joke: Joke) = viewModelScope.launch {
-        jokeDao.insert(joke)
+        jokeRepository.insertJokeInDatabase(joke)
     }
 
     fun addNewJokeClicked() = viewModelScope.launch {
@@ -118,29 +135,27 @@ class JokeViewModel @Inject constructor(
 
         override fun toString(): String {
             var finalString = ""
-            if (prog){
+            if (prog) {
                 finalString += "Programming,"
             }
-            if (dark){
+            if (dark) {
                 finalString += "Dark,"
             }
-            if (misc){
+            if (misc) {
                 finalString += "Misc,"
             }
-            if (pun){
+            if (pun) {
                 finalString += "Pun,"
             }
-            if (christ){
+            if (christ) {
                 finalString += "Christmas,"
             }
-            if (spooky){
+            if (spooky) {
                 finalString += "Spooky,"
             }
             finalString = finalString.removeSuffix(",")
-            return  finalString
+            return finalString
         }
-
-
     }
 
 }

@@ -19,14 +19,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditJokeViewModel @Inject constructor(
-    private val jokeDAO: JokeDAO,
     private val jokeRepository: JokeRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val joke = savedStateHandle.get<Joke>("joke")
 
-    private val categoryFlow = jokeDAO.getCategories()
+    private val categoryFlow = jokeRepository.getAllCategories()
 
     val categories = categoryFlow.asLiveData()
 
@@ -59,7 +58,7 @@ class AddEditJokeViewModel @Inject constructor(
 
     val addEditJokeEvent = addEditJokeChannel.receiveAsFlow()
 
-    //Method to deal with the save button clicked
+    //Method to handle save button clicked, makes new or updates joke
     fun onSaveClick() {
         if (jokeText.isEmpty()) {
             showInvalidInputMessage("Empty jokes are not funny")
@@ -93,12 +92,12 @@ class AddEditJokeViewModel @Inject constructor(
 
 
     private fun createJoke(joke: Joke) = viewModelScope.launch {
-        jokeDAO.insert(joke)
+        jokeRepository.insertJokeInDatabase(joke)
         addEditJokeChannel.send(AddEditJokeEvent.NavigateBackResult(ADD_JOKE_RESULT_OK))
     }
 
     private fun updateJoke(joke: Joke) = viewModelScope.launch {
-        jokeDAO.update(joke)
+        jokeRepository.updateJoke(joke)
         addEditJokeChannel.send(AddEditJokeEvent.NavigateBackResult(EDIT_JOKE_RESULT_OK))
     }
 

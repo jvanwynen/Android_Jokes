@@ -1,6 +1,8 @@
 package com.joost.joke_exercise.ui.home
 
+import android.os.Binder
 import android.os.Bundle
+import android.renderscript.ScriptGroup
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -9,6 +11,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -44,31 +47,27 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list),
 
         val jokeAdapter = JokeAdapter(this)
 
-        val selectedCategories = JokeViewModel.SelectedCategories()
-
         val listener = View.OnClickListener {
-            JokeViewModel.SelectedCategories()
             when (it) {
                 binding.checkboxDark -> {
-                    selectedCategories.dark = binding.checkboxDark.isChecked
+                    viewModel.onDarkSelected(binding.checkboxDark.isChecked)
                 }
                 binding.checkboxProg -> {
-                    selectedCategories.prog = binding.checkboxProg.isChecked
+                    viewModel.onProgrammingSelected(binding.checkboxProg.isChecked)
                 }
                 binding.checkboxPun -> {
-                    selectedCategories.pun = binding.checkboxPun.isChecked
+                    viewModel.onPun(binding.checkboxPun.isChecked)
                 }
                 binding.checkboxSpooky -> {
-                    selectedCategories.spooky = binding.checkboxSpooky.isChecked
+                   viewModel.onSpooky(binding.checkboxSpooky.isChecked)
                 }
                 binding.checkboxChrist -> {
-                    selectedCategories.christ = binding.checkboxChrist.isChecked
+                   viewModel.onChristmasSelected(binding.checkboxChrist.isChecked)
                 }
                 binding.checkboxMisc -> {
-                    selectedCategories.misc = binding.checkboxMisc.isChecked
+                   viewModel.onMiscSelected(binding.checkboxMisc.isChecked)
                 }
             }
-            viewModel.onCategoriesSelectedChanged(selectedCategories)
         }
 
         binding.apply {
@@ -111,6 +110,26 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list),
 
         viewModel.jokes.observe(viewLifecycleOwner) {
             jokeAdapter.submitList(it)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            binding.checkboxChrist.isChecked =
+                viewModel.preferencesFlow.first().showChristmas
+
+            binding.checkboxProg.isChecked =
+                viewModel.preferencesFlow.first().showProgramming
+
+            binding.checkboxPun.isChecked =
+                viewModel.preferencesFlow.first().showPun
+
+            binding.checkboxDark.isChecked =
+                viewModel.preferencesFlow.first().showDark
+
+            binding.checkboxMisc.isChecked =
+                viewModel.preferencesFlow.first().showMisc
+
+            binding.checkboxSpooky.isChecked =
+                viewModel.preferencesFlow.first().showSpooky
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
