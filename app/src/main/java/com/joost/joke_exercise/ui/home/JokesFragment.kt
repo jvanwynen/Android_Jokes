@@ -30,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -38,7 +39,8 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list),
 
     private lateinit var binding: FragmentJokesListBinding
 
-    private lateinit var jokeAdapter: JokeAdapter
+    @Inject
+    lateinit var jokeAdapter: JokeAdapter
 
     private val viewModel: JokeViewModel by viewModels()
 
