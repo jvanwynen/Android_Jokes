@@ -1,12 +1,13 @@
 package com.joost.joke_exercise.ui.addEdit
 
 
+import android.net.ConnectivityManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.joost.joke_exercise.api.JokeRepository
-import com.joost.joke_exercise.localstorage.JokeDAO
 import com.joost.joke_exercise.models.Joke
 import com.joost.joke_exercise.models.JokeApiResponse
 import com.joost.joke_exercise.ui.ADD_JOKE_RESULT_OK
@@ -16,6 +17,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class AddEditJokeViewModel @Inject constructor(
@@ -114,29 +116,19 @@ class AddEditJokeViewModel @Inject constructor(
     /*
     Method to turn the result from the Joke API in to Joke object, necessary because result may vary
      */
-    private fun resultToJoke(result: JokeApiResponse?) = viewModelScope.launch {
-        if (result != null) {
-            if (result.joke?.isEmpty() == false) {
-                addEditJokeChannel.send(
-                    AddEditJokeEvent.JokeFromInternetResult(
-                        Joke(
-                            jokeText = result.joke,
-                            category = result.category
-                        )
-                    )
-                )
+    private suspend fun resultToJoke(result: JokeApiResponse?) {
+        if (result != null && result.message.isNullOrBlank()) {
+            category = result.category
+            if (!result.joke.isNullOrEmpty()) { //checks if it is a single or twoPart joke
+                jokeText = result.joke
             } else {
-                addEditJokeChannel.send(
-                    AddEditJokeEvent.JokeFromInternetResult(
-                        Joke(
-                            jokeText = result.setup ?: "",
-                            delivery = result.delivery ?: "",
-                            category = result.category
-                        )
-                    )
-                )
+                jokeText = result.setup ?: "No joke found"
+                delivery = result.delivery ?: ""
             }
+        } else {
+            jokeText = "No joke found with these settings"
         }
+        addEditJokeChannel.send(AddEditJokeEvent.JokeFromInternetResult)
     }
 
     fun onOnlineClick() = viewModelScope.launch {
@@ -146,7 +138,7 @@ class AddEditJokeViewModel @Inject constructor(
     sealed class AddEditJokeEvent {
         data class InvalidInput(val msg: String) : AddEditJokeEvent()
         data class NavigateBackResult(val result: Int) : AddEditJokeEvent()
-        data class JokeFromInternetResult(val joke: Joke) : AddEditJokeEvent()
+        object JokeFromInternetResult : AddEditJokeEvent()
         object ShowSelection : AddEditJokeEvent()
     }
 

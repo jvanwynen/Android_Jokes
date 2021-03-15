@@ -22,7 +22,7 @@ import com.joost.joke_exercise.R
 import com.joost.joke_exercise.databinding.FragmentJokesListBinding
 import com.joost.joke_exercise.localstorage.SortOrder
 import com.joost.joke_exercise.models.Joke
-import com.joost.joke_exercise.ui.JokeAdapter
+
 import com.joost.joke_exercise.ui.dialog.DeleteDialogFragmentDirections
 import com.joost.joke_exercise.util.exhaustive
 import com.joost.joke_exercise.util.onQueryTextChanged
@@ -38,6 +38,8 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list),
 
     private lateinit var binding: FragmentJokesListBinding
 
+    private lateinit var jokeAdapter: JokeAdapter
+
     private val viewModel: JokeViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,7 +47,6 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list),
 
         binding = FragmentJokesListBinding.bind(view)
 
-        val jokeAdapter = JokeAdapter(this)
 
         val listener = View.OnClickListener {
             when (it) {

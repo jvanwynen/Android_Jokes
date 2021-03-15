@@ -1,10 +1,14 @@
 package com.joost.joke_exercise.di
 
 import android.app.Application
+import android.view.View
 import androidx.room.Room
 import com.joost.joke_exercise.api.JokeApi
 import com.joost.joke_exercise.localstorage.AppDatabase
 import com.joost.joke_exercise.models.Joke
+import com.joost.joke_exercise.ui.addEdit.AddEditJokeFragment
+import com.joost.joke_exercise.ui.home.JokeAdapter
+import com.joost.joke_exercise.ui.home.JokesFragment
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,4 +52,8 @@ object AppModule {
     @Singleton
     fun provideJokeApi(retrofit: Retrofit): JokeApi =
         retrofit.create(JokeApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideJokesFragment(): JokeAdapter.OnItemLongClickListener = JokesFragment()
 }

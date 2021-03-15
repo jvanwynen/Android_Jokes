@@ -151,7 +151,7 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes) {
                             !binding.addEditLayoutSelection.isVisible
                     }
                     is AddEditJokeViewModel.AddEditJokeEvent.JokeFromInternetResult -> {
-                        displayOnlineJoke(event.joke)
+                        displayOnlineJoke()
                     }
                 }.exhaustive
             }
@@ -159,11 +159,8 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes) {
     }
 
     //Displays the content of the online joke
-    private fun displayOnlineJoke(onlineJoke: Joke) {
+    private fun displayOnlineJoke() {
         binding.apply {
-            viewModel.jokeText = onlineJoke.jokeText
-            viewModel.delivery = onlineJoke.delivery
-            viewModel.category = onlineJoke.category
             jokeTextEdit.setText(viewModel.jokeText)
             jokeTextDelivery.setText(viewModel.delivery)
             addEditSpinner.setSelectionOnStringValue(

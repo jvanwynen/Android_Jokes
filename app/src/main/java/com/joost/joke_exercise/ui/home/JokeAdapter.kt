@@ -1,4 +1,4 @@
-package com.joost.joke_exercise.ui
+package com.joost.joke_exercise.ui.home
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joost.joke_exercise.R
 import com.joost.joke_exercise.databinding.ItemJokeBinding
 import com.joost.joke_exercise.models.Joke
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class JokeAdapter(
+@Singleton
+class JokeAdapter @Inject constructor (
     private val longListener: OnItemLongClickListener
 ) : ListAdapter<Joke, JokeAdapter.JokeViewHolder>(DiffCallback()) {
 
@@ -43,7 +46,7 @@ class JokeAdapter(
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val current = getItem(position)
-                    if (current.delivery.isNotEmpty()) {
+                    if (current.delivery.isNotBlank()) {
                         binding.delivery.isVisible = !binding.delivery.isVisible
                     }
                 }
@@ -58,16 +61,14 @@ class JokeAdapter(
                 } else {
                     favorite.setImageResource(android.R.drawable.btn_star_big_off)
                 }
-                if (joke.delivery.isNotEmpty()) {
+                if (joke.delivery.isNotBlank()) {
                     root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.purple_500))
                     delivery.text = joke.delivery
+                } else {
+                    root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.teal_200))
                 }
             }
         }
-    }
-
-    interface OnItemClickListener {
-        fun onItemClick(joke: Joke)
     }
 
     interface OnItemLongClickListener {

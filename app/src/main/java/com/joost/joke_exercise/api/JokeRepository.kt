@@ -6,6 +6,7 @@ import com.joost.joke_exercise.models.Joke
 import com.joost.joke_exercise.models.JokeApiResponse
 import com.joost.joke_exercise.ui.home.JokeViewModel
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,16 +17,33 @@ class JokeRepository @Inject constructor(
 ) {
 
     suspend fun getOnlineJoke(category: String, flags: List<String>, type: String): JokeApiResponse? {
-        val response =  jokeApi.getJoke(category, type, flags)
-        return if (response.isSuccessful){
-            response.body()
-        } else {
-            JokeApiResponse(joke = response.message(), category = "Programming")
+        return try {
+            val response = jokeApi.getJoke(category, type, flags)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                JokeApiResponse(
+                    joke = response.message(),
+                    category = "Programming",
+                    delivery = "",
+                    setup = ""
+                )
+            }
+        } catch (exc: IOException){
+            JokeApiResponse(
+                joke = "No connection",
+                category = "Programming",
+                delivery = "",
+                setup = ""
+            )
         }
     }
 
-     fun getJokesFromDatabase(query: String, filterPreferences: FilterPreferences): Flow<List<Joke>> {
-        val selectedCategories = JokeViewModel.SelectedCategories(
+    fun getJokesFromDatabase(
+        query: String,
+        filterPreferences: FilterPreferences
+    ): Flow<List<Joke>> {
+        val selectedCategories = SelectedCategories(
             filterPreferences.showProgramming,
             filterPreferences.showDark,
             filterPreferences.showMisc,
@@ -33,7 +51,6 @@ class JokeRepository @Inject constructor(
             filterPreferences.showChristmas,
             filterPreferences.showPun
         )
-
         return jokeDao.getJokes(
             query,
             filterPreferences.sortOrder,
@@ -42,27 +59,59 @@ class JokeRepository @Inject constructor(
         )
     }
 
-    suspend fun deleteJokeFromDatabase(joke: Joke){
+    suspend fun deleteJokeFromDatabase(joke: Joke) {
         jokeDao.delete(joke)
     }
 
-    suspend fun deleteAllJokesFromDatabase(){
+    suspend fun deleteAllJokesFromDatabase() {
         jokeDao.deleteAll()
     }
 
-    suspend fun insertJokeInDatabase(joke: Joke){
+    suspend fun insertJokeInDatabase(joke: Joke) {
         jokeDao.insert(joke)
     }
 
-    suspend fun deleteAllNonFavoriteJokesFromDatabase(){
+    suspend fun deleteAllNonFavoriteJokesFromDatabase() {
         jokeDao.deleteAllNonFavorite()
     }
 
-    suspend fun updateJoke(joke: Joke){
+    suspend fun updateJoke(joke: Joke) {
         jokeDao.update(joke)
     }
 
     fun getAllCategories() = jokeDao.getCategories()
 
+    data class SelectedCategories(
+        var prog: Boolean = false,
+        var dark: Boolean = false,
+        var misc: Boolean = false,
+        var spooky: Boolean = false,
+        var christ: Boolean = false,
+        var pun: Boolean = false
+    ) {
 
+        override fun toString(): String {
+            var finalString = ""
+            if (prog) {
+                finalString += "Programming,"
+            }
+            if (dark) {
+                finalString += "Dark,"
+            }
+            if (misc) {
+                finalString += "Misc,"
+            }
+            if (pun) {
+                finalString += "Pun,"
+            }
+            if (christ) {
+                finalString += "Christmas,"
+            }
+            if (spooky) {
+                finalString += "Spooky,"
+            }
+            finalString = finalString.removeSuffix(",")
+            return finalString
+        }
+    }
 }

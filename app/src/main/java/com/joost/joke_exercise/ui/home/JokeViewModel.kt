@@ -124,39 +124,5 @@ class JokeViewModel @Inject constructor(
         object NavigateToDeleteAll : JokeEvent()
     }
 
-    data class SelectedCategories(
-        var prog: Boolean = false,
-        var dark: Boolean = false,
-        var misc: Boolean = false,
-        var spooky: Boolean = false,
-        var christ: Boolean = false,
-        var pun: Boolean = false
-    ) {
-
-        override fun toString(): String {
-            var finalString = ""
-            if (prog) {
-                finalString += "Programming,"
-            }
-            if (dark) {
-                finalString += "Dark,"
-            }
-            if (misc) {
-                finalString += "Misc,"
-            }
-            if (pun) {
-                finalString += "Pun,"
-            }
-            if (christ) {
-                finalString += "Christmas,"
-            }
-            if (spooky) {
-                finalString += "Spooky,"
-            }
-            finalString = finalString.removeSuffix(",")
-            return finalString
-        }
-    }
-
 }
 
