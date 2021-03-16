@@ -1,5 +1,4 @@
 # About Joke application
-
 In this project I build an Android application using MVVM architecture. I used some Jetpack libraries, Kotlin Coroutines and Dagger Hilt. The app uses the [Joke API](https://jokeapi.dev/) as a remote data source.
 
 # Screenshots
@@ -22,20 +21,17 @@ I made a diagram to show the flow of the data between the three layers.
 
 Libraries Used
 ---------------
-* [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - store and manage UI-related data in a lifecycle conscious way
-* [StateFlow](https://developer.android.com/kotlin/flow/stateflow-and-sharedflow) - enable flows to optimally emit state updates and emit values to multiple consumers..
-* [ViewBinding](https://developer.android.com/topic/libraries/view-binding) - bind UI components to data sources
+* [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - designed to store and manage UI-related data in a lifecycle conscious way
+* [ViewBinding](https://developer.android.com/topic/libraries/view-binding) - Offers a type safe way to access views. 
+* [Navigation Components](https://developer.android.com/guide/navigation/navigation-getting-started) - offers a way to navigate between Fragments
 * [Material](https://material.io/develop/android/docs/getting-started/) - Material Components.
-* [Coroutine](https://github.com/Kotlin/kotlinx.coroutines#user-content-android) - performs background tasks
-* [Flows](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) - for asynchronous data streams
-* [Retrofit2](https://square.github.io/retrofit/)- networking
+* [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) - Provides Local Key-value storage
+* [Room database](https://developer.android.com/training/data-storage/room) Abstraction layer over local SQLite persistence
+* [Coroutine](https://github.com/Kotlin/kotlinx.coroutines) - Provides a way to do background tasks
+* [Flows](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) - To transfer data in stream asyncronous
+* [Retrofit2](https://square.github.io/retrofit/)- HTTP client
 * [Gson](https://github.com/google/gson) - JSON Parser
-* [Dagger2](https://dagger.dev/users-guide) - dependency injector
-* [Stetho](http://facebook.github.io/stetho/) - debug bridge
-* [Espresso](https://developer.android.com/training/testing/espresso/) // UI test
-* [Barsita](https://github.com/AdevintaSpain/Barista) -UI tests Built on top of Espresso
-* [Junit](https://junit.org/junit4/) // unit tests
-* [Truth](https://github.com/google/truth) // Makes your test assertions and failure messages more readable
+* [Dagger Hilt](https://dagger.dev/hilt/) - dependency injector
 
 
 # To be added
