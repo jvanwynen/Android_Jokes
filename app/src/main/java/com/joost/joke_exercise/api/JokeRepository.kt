@@ -24,17 +24,11 @@ class JokeRepository @Inject constructor(
             } else {
                 JokeApiResponse(
                     joke = response.message(),
-                    category = "Programming",
-                    delivery = "",
-                    setup = ""
                 )
             }
         } catch (exc: IOException){
             JokeApiResponse(
-                joke = "No connection",
-                category = "Programming",
-                delivery = "",
-                setup = ""
+                joke = "No connection"
             )
         }
     }

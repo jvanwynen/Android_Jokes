@@ -34,13 +34,9 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class JokesFragment : Fragment(R.layout.fragment_jokes_list),
-    JokeAdapter.OnItemLongClickListener {
+class JokesFragment : Fragment(R.layout.fragment_jokes_list) {
 
     private lateinit var binding: FragmentJokesListBinding
-
-    @Inject
-    lateinit var jokeAdapter: JokeAdapter
 
     private val viewModel: JokeViewModel by viewModels()
 
@@ -49,6 +45,11 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list),
 
         binding = FragmentJokesListBinding.bind(view)
 
+        val jokeAdapter = JokeAdapter(
+            onItemLongClicked = {
+                viewModel.onJokeSelected(it)
+            }
+        )
 
         val listener = View.OnClickListener {
             when (it) {
@@ -182,11 +183,6 @@ class JokesFragment : Fragment(R.layout.fragment_jokes_list),
         }
         setHasOptionsMenu(true)
     }
-
-    override fun onItemLongClick(joke: Joke) {
-        viewModel.onJokeSelected(joke)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_fragment_jokes, menu)
 

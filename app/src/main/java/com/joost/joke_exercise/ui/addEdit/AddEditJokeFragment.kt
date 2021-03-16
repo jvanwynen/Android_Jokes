@@ -151,21 +151,16 @@ class AddEditJokeFragment : Fragment(R.layout.fragment_add_edit_jokes) {
                             !binding.addEditLayoutSelection.isVisible
                     }
                     is AddEditJokeViewModel.AddEditJokeEvent.JokeFromInternetResult -> {
-                        displayOnlineJoke()
+                        binding.apply {
+                            jokeTextEdit.setText(viewModel.jokeText)
+                            jokeTextDelivery.setText(viewModel.delivery)
+                            addEditSpinner.setSelectionOnStringValue(
+                                viewModel.category
+                            )
+                        }
                     }
                 }.exhaustive
             }
-        }
-    }
-
-    //Displays the content of the online joke
-    private fun displayOnlineJoke() {
-        binding.apply {
-            jokeTextEdit.setText(viewModel.jokeText)
-            jokeTextDelivery.setText(viewModel.delivery)
-            addEditSpinner.setSelectionOnStringValue(
-                viewModel.category
-            )
         }
     }
 }

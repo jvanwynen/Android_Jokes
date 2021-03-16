@@ -118,7 +118,7 @@ class AddEditJokeViewModel @Inject constructor(
      */
     private suspend fun resultToJoke(result: JokeApiResponse?) {
         if (result != null && result.message.isNullOrBlank()) {
-            category = result.category
+            category = result.category ?: ""
             if (!result.joke.isNullOrEmpty()) { //checks if it is a single or twoPart joke
                 jokeText = result.joke
             } else {

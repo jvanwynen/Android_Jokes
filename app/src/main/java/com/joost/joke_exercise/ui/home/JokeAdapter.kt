@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joost.joke_exercise.R
 import com.joost.joke_exercise.databinding.ItemJokeBinding
 import com.joost.joke_exercise.models.Joke
+import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@FragmentScoped
 class JokeAdapter @Inject constructor (
-    private val longListener: OnItemLongClickListener
+    private val onItemLongClicked: (Joke) -> Unit
 ) : ListAdapter<Joke, JokeAdapter.JokeViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JokeViewHolder {
@@ -37,7 +38,7 @@ class JokeAdapter @Inject constructor (
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val joke = getItem(position)
-                    longListener.onItemLongClick(joke)
+                    onItemLongClicked(joke)
                 }
                 true
             }
@@ -69,10 +70,6 @@ class JokeAdapter @Inject constructor (
                 }
             }
         }
-    }
-
-    interface OnItemLongClickListener {
-        fun onItemLongClick(joke: Joke)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<Joke>() {

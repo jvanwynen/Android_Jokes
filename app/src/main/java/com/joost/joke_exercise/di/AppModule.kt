@@ -12,6 +12,7 @@ import com.joost.joke_exercise.ui.home.JokesFragment
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Singleton
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
@@ -52,8 +53,4 @@ object AppModule {
     @Singleton
     fun provideJokeApi(retrofit: Retrofit): JokeApi =
         retrofit.create(JokeApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideJokesFragment(): JokeAdapter.OnItemLongClickListener = JokesFragment()
 }
