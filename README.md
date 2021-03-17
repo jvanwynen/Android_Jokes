@@ -1,4 +1,7 @@
 # About Joke application
+
+This is an Android application to store, sort, rate and search Jokes. It also provides you with the possibility get jokes from an online database.
+
 In this project I build an Android application using MVVM architecture. I used some Jetpack libraries, Kotlin Coroutines and Dagger Hilt. The app uses the [Joke API](https://jokeapi.dev/) as a remote data source.
 
 # Screenshots
