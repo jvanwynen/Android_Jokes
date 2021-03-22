@@ -4,18 +4,30 @@ This is an Android application to store, sort, rate and search Jokes. It also pr
 
 In this project I build an Android application using MVVM architecture. I used some Jetpack libraries, Kotlin Coroutines and Dagger Hilt. The app uses the [Joke API](https://jokeapi.dev/) as a remote data source.
 
-# Screenshots
+# CLEAN architecture
+
+I have decided to update the application to have a clean architecture following this structure
 <p align="center">
+  <img src="figures/architecture.jpeg" width="400">
+</p>
+
+This is not done yet. The following needs to be done: 
+
+* remove use-cases from viewmodel and place in seperate Interactors
+
+
+# Screenshots
+<p>
   <img src="figures/ScreenShot1.jpeg" width="200">
   <img src="figures/Screenshot2.jpeg" width="200">
 </p>
 
-# The Project Architecture
+# The presentation layout
 ### Communication between layers
 1. UI calls method from ViewModel.
-2. Logic is handled in Viewmode;s
+2. Logic is handled in Viewmodels
 3. Viewmodels send LiveData or Events back to UI
-4. The viewModels ask the respository for data which will come in form of Flows or with coroutines. 
+4. The Repository provides viewModel with data from local or remote sources 
 5. The repository communicates with the Local storage with Flows. 
 
 I made a diagram to show the flow of the data between the three layers.
@@ -38,6 +50,7 @@ Libraries Used
 
 
 # To be added
-* Testing
+* Unit testing for Business layer
+* Instrumentation test for Framework layer
 
 <br />
