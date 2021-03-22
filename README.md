@@ -1,10 +1,13 @@
 # About Joke application
+
+This is an Android application to store, sort, rate and search Jokes. It also provides you with the possibility get jokes from an online database.
+
 In this project I build an Android application using MVVM architecture. I used some Jetpack libraries, Kotlin Coroutines and Dagger Hilt. The app uses the [Joke API](https://jokeapi.dev/) as a remote data source.
 
 # Screenshots
 <p align="center">
-  <img src="" width="200">
-  <img src="" width="200">
+  <img src="figures/ScreenShot1.jpeg" width="200">
+  <img src="figures/Screenshot2.jpeg" width="200">
 </p>
 
 # The Project Architecture
@@ -16,7 +19,7 @@ In this project I build an Android application using MVVM architecture. I used s
 5. The repository communicates with the Local storage with Flows. 
 
 I made a diagram to show the flow of the data between the three layers.
-![System Architecture](screenshots/dataFlowDiagram.png )
+![System Architecture](figures/diagram.PNG )
 
 
 Libraries Used
